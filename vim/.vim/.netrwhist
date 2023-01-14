@@ -1,0 +1,5 @@
+let g:netrw_dirhistmax  =10
+let g:netrw_dirhistcnt =3
+let g:netrw_dirhist_3='/Users/akeane/Desktop/my_ossu/missing_semester/02-shell_tools_scripting/foo'
+let g:netrw_dirhist_2='/Users/akeane/.vim/pack/vendor/start/ctrlp/ctrlp.vim'
+let g:netrw_dirhist_1='/Users/akeane/.vim/pack/vendor/start/ctrlp.vim'
