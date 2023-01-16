@@ -109,3 +109,8 @@ nnoremap <leader>n :NERDTreeFocus<CR>
 nnoremap <C-n> :NERDTree<CR>
 nnoremap <C-t> :NERDTreeToggle<CR>
 nnoremap <C-f> :NERDTreeFind<CR>
+
+" emmet-vim stuff
+" enable only for html/css
+let g:user_emmet_install_global = 0
+autocmd FileType html,css EmmetInstall
