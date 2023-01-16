@@ -9,3 +9,6 @@ export PATH="$HOME/.rbenv/shims:$PATH"
 
 #SMLNJ
 export PATH=/usr/local/smlnj/bin:"$PATH"
+
+#gobin
+export PATH=$PATH:/Users/akeane/go/bin
