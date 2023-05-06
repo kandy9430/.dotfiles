@@ -121,7 +121,7 @@ function()
 	local windows = ""
 	for i = 1, #recentlyMinimizedWindows do
 		local window = recentlyMinimizedWindows[i]
-		windows = windows .. i .. ": " .. window:title() .. "\n"
+		windows = windows .. i .. ": " .. window:application():title() .. "\n"
 	end
 	hs.alert.show(windows)
 end)
@@ -134,7 +134,6 @@ function()
 	local windows = hs.window.visibleWindows()
 	for i = 1, #windows do
 		local window = windows[i]
-		print(window:title())
 		if window:screen() == screen then
 			addToRecentlyMinimized(window)
 			window:minimize()
@@ -148,8 +147,11 @@ hs.hotkey.bind({"cmd", "alt", "ctrl"}, "-",
 function()
 	local window = hs.window.focusedWindow()
 	addToRecentlyMinimized(window)
-	if not window:focusWindowWest(nil, true) then
-		window:focusWindowEast(nil, true)
+	if lastFocused == nil then
+		if not window:focusWindowWest(nil, true) then
+			window:focusWindowEast(nil, true)
+		end
+	else lastFocused:focus()
 	end
 	window:minimize()
 end)
@@ -183,7 +185,7 @@ addToRecentlyMinimized = function(window)
 	-- check if focused window to be minimized is already in the array
 	local inArray = inArray(window, recentlyMinimizedWindows)
 	-- if not, then insert into array, and generate hotkeys
-	if not inArray then
+	if not inArray and window:title() ~= "" then
 		table.insert(recentlyMinimizedWindows, window) 
 		recentlyClosedHotkeys(recentlyMinimizedWindows)
 	end
@@ -212,6 +214,7 @@ function()
 		app:kill()
 	end
 end)
+
 -- end minimizing windows
 	
 -- Window movement/resizing modal 

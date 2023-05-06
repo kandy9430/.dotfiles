@@ -2,6 +2,9 @@
 
 " If you open this file in Vim, it'll be syntax highlighted for you.
 
+" Remap <Leader> to `,`
+let mapleader = ","
+
 " Vim is based on Vi. Setting `nocompatible` switches from the default
 " Vi-compatibility mode and enables useful Vim functionality. This
 " configuration option turns out not to be necessary for the file named
@@ -44,6 +47,17 @@ set backspace=indent,eol,start
 " for more information on this.
 set hidden
 
+" ***** Buffers and Windows ******
+" Map :buffers command to <Leader>b
+nnoremap <Leader>b :buffers<CR>:buffer<Space>
+
+" Map window navigation commands
+nnoremap <C-J> <C-W><C-J>
+nnoremap <C-K> <C-W><C-K>
+nnoremap <C-L> <C-W><C-L>
+nnoremap <C-H> <C-W><C-H>
+" ***** End Buffers and Windows *****
+
 " This setting makes search case-insensitive when all characters in the string
 " being searched are lowercase. However, the search becomes case-sensitive if
 " it contains any capital letters. This makes searching more convenient.
@@ -68,6 +82,10 @@ set noerrorbells visualbell t_vb=
 " Enable mouse support. You should avoid relying on this too much, but it can
 " sometimes be convenient.
 set mouse+=a
+
+" Quickly insert an empty new line without entering insert mode
+nnoremap <Leader>o o<Esc>0"_D
+nnoremap <Leader>O O<esc>0"_D
 
 " Try to prevent bad habits like using the arrow keys for movement. This is
 " not the only possible bad habit. For example, holding down the h/j/k/l keys
@@ -103,14 +121,27 @@ let g:ctrlp_working_path_mode = 'c'
 " for vim-go commands
 filetype plugin indent on
 
+" ***** NERDTree STUFF **********
 " Map shortcuts for NERDTree
-" NOTE <leader> mapped to \
+" NOTE <leader> mapped to ,
 nnoremap <leader>n :NERDTreeFocus<CR>
 nnoremap <C-n> :NERDTree<CR>
 nnoremap <C-t> :NERDTreeToggle<CR>
 nnoremap <C-f> :NERDTreeFind<CR>
 
-" emmet-vim stuff
+" Exit Vim if NERDTree is the only window remaining in the only tab.
+autocmd BufEnter * if tabpagenr('$') == 1 && winnr('$') == 1 && exists('b:NERDTree') && b:NERDTree.isTabTree() | quit | endif
+
+" Close the tab if NERDTree is the only window remaining in it.
+autocmd BufEnter * if winnr('$') == 1 && exists('b:NERDTree') && b:NERDTree.isTabTree() | quit | endif
+
+" If another buffer tries to replace NERDTree, put it in the other window, and bring back NERDTree.
+autocmd BufEnter * if bufname('#') =~ 'NERD_tree_\d\+' && bufname('%') !~ 'NERD_tree_\d\+' && winnr('$') > 1 |
+    \ let buf=bufnr() | buffer# | execute "normal! \<C-W>w" | execute 'buffer'.buf | endif
+" ***** End NERDTree STUFF ******
+
+" ****** emmet-vim stuff ******
 " enable only for html/css
 let g:user_emmet_install_global = 0
 autocmd FileType html,css EmmetInstall
+" ****** End emmet-vim stuff ******

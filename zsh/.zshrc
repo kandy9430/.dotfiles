@@ -15,3 +15,5 @@ cdll () {
 	cd "$1"
 	ll
 }
+
+export DISPLAY=localhost:0
