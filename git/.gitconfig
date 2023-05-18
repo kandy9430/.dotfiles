@@ -1,2 +1,5 @@
 [user]
 	email = kandy9495@gmail.com
+
+[alias]
+	hist = log --all --graph --decorate
