@@ -1,0 +1,3 @@
+Creating symlinks:
+	ex: $ ln -s ~/.dotfiles/vim/.vimrc ~/.vimrc
+	creates a symlink ~/.vimrc which points to the existing file at ~/.dotfiles/vim/.vimrc
