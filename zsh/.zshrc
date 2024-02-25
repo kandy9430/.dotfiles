@@ -22,7 +22,17 @@ sshcockpit() {
 	ssh "$1" -L 9090:"$1":9090
 }
 
-export DISPLAY=localhost:0
+# rclone commands
+# mount OneDrive and OneDriveCrypt
+rclone_mount () {
+	rclone mount OneDrive: ~/OneDrive --daemon --vfs-cache-mode writes
+	rclone mount OneDriveCrypt: ~/OneDriveCrypt --daemon --vfs-cache-mode writes
+}
+
+rclone_umount () {
+	umount ~/OneDrive
+	umount ~/OneDriveCrypt
+}
 
 #for organizing media libraries:
 #mkdir for all files in directory
@@ -40,3 +50,4 @@ mv-all() {
 		fi;
 }
 
+export DISPLAY=localhost:0
