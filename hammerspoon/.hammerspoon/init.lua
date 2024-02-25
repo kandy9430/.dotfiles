@@ -12,6 +12,7 @@ hs.hotkey.bind({"cmd", "alt", "ctrl"}, "[",
 "Move focused window to occupy left half of screen",
 function() 
 	local win = hs.window.focusedWindow()
+	local app = win:application():name()
 	local f = win:frame()
 	local screen = win:screen()
 	local max = screen:frame()
@@ -20,7 +21,12 @@ function()
 	f.y = max.y
 	f.w = max.w / 2
 	f.h = max.h
-	win:setFrame(f)
+
+	if app == "Firefox" then
+		win:setFrame(f, 2)
+	else
+		win:setFrame(f)
+	end
 end)
 
 -- Move focused window to occupy right half of screen
@@ -28,6 +34,7 @@ hs.hotkey.bind({"cmd", "alt", "ctrl"}, "]",
 "Move focused window to occupy right half of screen",
 function() 
 	local win = hs.window.focusedWindow()
+	local app = win:application():name()
 	local f = win:frame()
 	local screen = win:screen()
 	local max = screen:frame()
@@ -36,7 +43,12 @@ function()
 	f.y = max.y
 	f.w = max.w / 2
 	f.h = max.h
-	win:setFrame(f)
+
+	if app == "Firefox" then
+		win:setFrame(f, 2)
+	else
+		win:setFrame(f)
+	end
 end)
 
 -- center focused window on screen
@@ -51,10 +63,20 @@ hs.hotkey.bind({"cmd", "alt", "ctrl"}, "F",
 "make current focused window occupy entire screen (except for dock and menu bar)",
 function()
 	local win = hs.window.focusedWindow()
-	local screen = win:screen()
-	local max = screen:frame()
-	
-	win:setFrame(max)
+	local app = win:application():name()
+
+	if app == "Firefox" then
+		win:maximize(2.5)
+	else
+		win:maximize()
+	end
+	print(app)
+	-- local win = hs.window.focusedWindow()
+	-- local screen = win:screen()
+	-- local max = screen:frame()
+	-- print(max, win:frame())
+	-- 
+	-- win:setFrame(max, 1)
 end)
 
 -- Move focused window to screen to left, if present
@@ -62,8 +84,6 @@ hs.hotkey.bind({"cmd", "alt", "ctrl"}, "Left",
 "Move focused window to screen to left, if present",
 function()
 	local win = hs.window.focusedWindow()
-	local f = win:frame()
-	local screen = win:screen()
 	local max = screen:frame()
 	local screenToLeft = screen:toWest()
 
