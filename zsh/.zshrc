@@ -25,8 +25,11 @@ sshcockpit() {
 # rclone commands
 # mount OneDrive and OneDriveCrypt
 rclone_mount () {
-	rclone nfsmount OneDrive: ~/OneDrive --daemon --vfs-cache-mode writes
-	rclone nfsmount OneDriveCrypt: ~/OneDriveCrypt --daemon --vfs-cache-mode writes
+	echo -n "Rclone Password: "
+	read -s password
+	echo
+	rclone --password-command "echo $password" nfsmount OneDrive: ~/OneDrive --daemon --vfs-cache-mode writes
+	rclone --password-command "echo $password" nfsmount OneDriveCrypt: ~/OneDriveCrypt --daemon --vfs-cache-mode writes
 }
 
 rclone_umount () {
