@@ -51,3 +51,5 @@ mv-all() {
 }
 
 export DISPLAY=localhost:0
+export EDITOR=vim
+export VISUAL=vim
