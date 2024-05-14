@@ -145,3 +145,8 @@ autocmd BufEnter * if bufname('#') =~ 'NERD_tree_\d\+' && bufname('%') !~ 'NERD_
 let g:user_emmet_install_global = 0
 autocmd FileType html,css EmmetInstall
 " ****** End emmet-vim stuff ******
+
+" ****** rust.vim *******
+syntax enable
+" filetype plugin indent on " required, but already enabled for vim-go
+" ****** end rust.vim *****
