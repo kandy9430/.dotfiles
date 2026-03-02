@@ -21,3 +21,4 @@ dufs-upload() {
 }
 
 alias dufs-local="sudo docker run -v /run/media/atkeane/X9\ Pro/mycloud:/data -p 127.0.0.1:80:5000 --rm sigoden/dufs /data -A"
+# Might need to mount ssd manually: use cmd "sudo mount /dev/sda2 /run/media/atkeane/X9\ Pro/"
