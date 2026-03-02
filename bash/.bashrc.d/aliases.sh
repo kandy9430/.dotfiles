@@ -12,3 +12,6 @@ cdll () {
 	cd "$1"
 	ll
 }
+
+#always run vimx
+alias vim="vimx"
