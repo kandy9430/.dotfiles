@@ -7,80 +7,83 @@ hs.window.highlight.ui.frameWidth = 10 -- change window framewidth in overlay mo
 -- hs.window.highlight.ui.frameColor = {0.5,0.5,0,0.7}
 hs.window.highlight.start()
 
--- Move focused window to occupy left half of screen
-hs.hotkey.bind({"cmd", "alt", "ctrl"}, "[", 
-"Move focused window to occupy left half of screen",
-function() 
-	local win = hs.window.focusedWindow()
-	local app = win:application():name()
-	local f = win:frame()
-	local screen = win:screen()
-	local max = screen:frame()
+-- set the keybind mods
+mods = { "alt" } 	
+mods2 = {"alt", "cmd"}
 
-	f.x = max.x
-	f.y = max.y
-	f.w = max.w / 2
-	f.h = max.h
+hs.window.animationDuration = 0
 
-	if app == "Firefox" then
-		win:setFrame(f, 2)
-	else
-		win:setFrame(f)
+function axHotfix(win)
+	local axApp = hs.axuielement.applicationElement(win:application())
+	local wasEnhanced = axApp.AXEnhancedUserInterface
+	if wasEnhanced then
+		axApp.AXEnhancedUserInterface = false
 	end
-end)
 
+	return function()
+		if wasEnhanced then
+			axApp.AXEnhancedUserInterface = true
+		end
+	end
+end
+
+-- Move focused window to occupy left half of screen
+hs.hotkey.bind(mods, "Left",
+"Move focused window to occupy left half of screen",
+function()
+	local win = hs.window.focusedWindow();
+	if not win then return end
+	local revert = axHotfix(win)
+	win:moveToUnit(hs.layout.left50)
+	revert()
+end)
+		
 -- Move focused window to occupy right half of screen
-hs.hotkey.bind({"cmd", "alt", "ctrl"}, "]", 
+hs.hotkey.bind(mods, "Right",
 "Move focused window to occupy right half of screen",
 function() 
-	local win = hs.window.focusedWindow()
-	local app = win:application():name()
-	local f = win:frame()
-	local screen = win:screen()
-	local max = screen:frame()
+	local win = hs.window.focusedWindow();
+	if not win then return end
+	local revert = axHotfix(win)
+	win:moveToUnit(hs.layout.right50)
+	revert()
+end)
 
-	f.x = max.x + (max.w / 2)
-	f.y = max.y
-	f.w = max.w / 2
-	f.h = max.h
-
-	if app == "Firefox" then
-		win:setFrame(f, 2)
-	else
-		win:setFrame(f)
-	end
+-- Toggle fullscreen
+hs.hotkey.bind(mods2, "Up", 
+"Toggle fullscreen",
+function()
+  local win = hs.window.focusedWindow();
+  if not win then return end
+	local revert = axHotfix(win)
+  win:setFullScreen(not win:isFullScreen())
+	revert()
 end)
 
 -- center focused window on screen
-hs.hotkey.bind({"cmd", "alt", "ctrl"}, "C",
+hs.hotkey.bind(mods, "Down",
 "Center focused window on screen",
 function()
-	hs.window.focusedWindow():centerOnScreen(true)
+	local win = hs.window.focusedWindow();
+	if not win then return end
+	local revert = axHotfix(win)
+	win:centerOnScreen(true)
+	revert()
 end)
 
 -- make current focused window occupy entire screen (except for dock and menu bar)
-hs.hotkey.bind({"cmd", "alt", "ctrl"}, "F", 
+hs.hotkey.bind(mods, "Up", 
 "make current focused window occupy entire screen (except for dock and menu bar)",
 function()
 	local win = hs.window.focusedWindow()
-	local app = win:application():name()
-
-	if app == "Firefox" then
-		win:maximize(2.5)
-	else
-		win:maximize()
-	end
-	print(app)
-	-- local win = hs.window.focusedWindow()
-	-- local screen = win:screen()
-	-- local max = screen:frame()
-	-- print(max, win:frame())
-	-- 
-	-- win:setFrame(max, 1)
+	if not win then return end
+	local revert = axHotfix(win)
+	win:maximize()
+	revert()
 end)
 
 -- Move focused window to screen to left, if present
-hs.hotkey.bind({"cmd", "alt", "ctrl"}, "Left", 
+hs.hotkey.bind(mods2, "Left", 
 "Move focused window to screen to left, if present",
 function()
 	local win = hs.window.focusedWindow()
@@ -93,7 +96,7 @@ function()
 end)
 
 -- Move focused window to screen to right, if present
-hs.hotkey.bind({"cmd", "alt", "ctrl"}, "Right", 
+hs.hotkey.bind(mods2, "Right", 
 "Move focused window to screen ot right, if present",
 function()
 	local win = hs.window.focusedWindow()
@@ -108,7 +111,7 @@ function()
 end)
 
 -- focus window frontmost window immediately to left
-hs.hotkey.bind({"cmd", "alt", "ctrl"}, "H", 
+hs.hotkey.bind(mods, "H", 
 "Focus frontmose window immediately to left",
 function()
 	local win = hs.window.focusedWindow()
@@ -116,18 +119,11 @@ function()
 end)
 
 -- focus window frontmost window immediately to right
-hs.hotkey.bind({"cmd", "alt", "ctrl"}, "L", 
+hs.hotkey.bind(mods, "L", 
 "Focus frontmost window immediately to right",
 function()
 	local win = hs.window.focusedWindow()
 	win:focusWindowEast(nil, true)
-end)
-
--- like pressing the green button on an application
-hs.hotkey.bind({"cmd", "alt", "ctrl"}, "T", 
-"Maximize current window (like pressing green button)",
-function()
-	hs.window.focusedWindow():toggleZoom()
 end)
 
 -- Minimizing Windows
@@ -135,7 +131,7 @@ end)
 recentlyMinimizedWindows = {}
 
 -- Display list of recently minimized windows"
-hs.hotkey.bind({"cmd", "alt", "ctrl"}, "S",
+hs.hotkey.bind(mods, "S",
 "Display list of recently minimized windows",
 function()
 	local windows = ""
@@ -147,7 +143,7 @@ function()
 end)
 
 -- minimize all windows on the focused screen
-hs.hotkey.bind({"cmd", "alt", "ctrl"}, "D", 
+hs.hotkey.bind(mods, "D", 
 "Minimize all windows on the focused screen",
 function()
 	local screen = hs.screen.mainScreen()
@@ -162,7 +158,7 @@ function()
 end)
 
 -- minimize current focused window
-hs.hotkey.bind({"cmd", "alt", "ctrl"}, "-", 
+hs.hotkey.bind(mods, "-", 
 "Minimize current window",
 function()
 	local window = hs.window.focusedWindow()
@@ -179,7 +175,7 @@ end)
 -- function to create hotkeys to unminimize recently minimized windows
 recentlyClosedHotkeys = function(recentlyMinimized)
 	for i = 1, #recentlyMinimized do
-		hs.hotkey.bind({"cmd", "alt", "ctrl"}, tostring(i),
+		hs.hotkey.bind(mods, tostring(i),
 		"open window " .. i .. " of recently closed table",
 		function()
 			recentlyMinimized[i]:unminimize():focus()
@@ -220,7 +216,7 @@ removeFromRecentlyMinimized = function(window)
 end
 
 -- close window, kill app if it was only window open
-hs.hotkey.bind({"cmd", "alt", "ctrl"}, "K",
+hs.hotkey.bind(mods, "K",
 "Close current window",
 function()
 	local win = hs.window.focusedWindow()
@@ -242,7 +238,7 @@ end)
 modalWindow = nil
 
 -- define the hotkey to enter the modal mode
-w = hs.hotkey.modal.new({"cmd", "alt", "ctrl"}, "W",
+w = hs.hotkey.modal.new(mods, "W",
 "Enter window movement and resizing modal")
 
 -- when modal is entered, show an alert, and set modalWindow variable as focused window
@@ -308,7 +304,7 @@ modalMoveOrResize("DOWN", "Decrease window height")
 
 -- screen layouts
 -- laptop only layout with terminal on left half, chrome on right half
-hs.hotkey.bind({"cmd", "alt", "ctrl"}, "f1", 
+hs.hotkey.bind(mods, "f1", 
 "Laptop only layout with terminal on left, chrome on right",
 function()
 	local laptopScreen = hs.screen.allScreens()[1]:name()
@@ -356,7 +352,7 @@ batteryPctWatcher:start()
 -- function to create keybinds for opening cheat sheets
 function openCheatSheet(key, message, file)
 	local dir = "/Users/akeane/Desktop/dev_tools"
-	hs.hotkey.bind({"cmd", "alt", "ctrl"}, key, message,
+	hs.hotkey.bind(mods, key, message,
 	function()
 		hs.execute("open " .. dir .. "/" .. file)
 	end)
@@ -373,7 +369,7 @@ openCheatSheet("V", "open vim cheat sheet", "vim_cheat_sheet.pdf")
 -- end cheat sheets
 
 -- show all currently active hotkeys
-hs.hotkey.showHotkeys({"cmd", "alt", "ctrl"}, "/")
+hs.hotkey.showHotkeys(mods, "/")
 
 -- automatic config reload when init files change
 function reloadConfig(files)
